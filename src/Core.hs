@@ -5,6 +5,7 @@ module Core
     , Mino (Mino, isFilled) 
     , mkBoard
     , mkBoardWithConstructor
+    , dims
     -- , clearRow
   ) where
 
@@ -53,20 +54,6 @@ boardToList :: Board a -> [[a]]
 boardToList (Board board) = (map . map) snd . groupBy equalRows . assocs $ board
   where equalRows x y = (fst . fst) x == (fst . fst) y
 
-rows :: Board a -> Int
-rows board = maxRow board - minRow board + 1
-
-cols :: Board a -> Int
-cols board = maxCol board - minCol board + 1
-
-minRow :: Board a -> Int
-minRow = fst . fst . bounds . getBoard
-
-maxRow :: Board a -> Int
-maxRow = fst . snd . bounds . getBoard
-
-minCol :: Board a -> Int
-minCol = snd . fst . bounds . getBoard
-
-maxCol :: Board a -> Int
-maxCol = snd . snd . bounds . getBoard
+dims :: Board a -> Point
+dims (Board board) = (maxRow - minRow + 1, maxCol - minCol + 1)
+  where ((minRow, minCol), (maxRow, maxCol)) = bounds board
