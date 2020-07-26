@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e11c4c159783f0ff9b5bb15846ed026f5a1e2c51c38a5b4625f3cb9a6efb9b25
+-- hash: c02079768def9a049ef638248288527c4aa9e3543515bf309c3d12e0660e1ae7
 
 name:           tetris-bot
 version:        0.1.0.0
@@ -27,13 +27,16 @@ source-repository head
 
 library
   exposed-modules:
+      Core
       Lib
+      Utils
   other-modules:
       Paths_tetris_bot
   hs-source-dirs:
       src
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
     , text
   default-language: Haskell2010
 
@@ -45,7 +48,8 @@ executable tetris-bot-exe
       app
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
     , tetris-bot
     , text
   default-language: Haskell2010
@@ -59,7 +63,8 @@ test-suite tetris-bot-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      array
+    , base >=4.7 && <5
     , tetris-bot
     , text
   default-language: Haskell2010
