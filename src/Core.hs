@@ -26,7 +26,7 @@ instance Empty Mino where
 
 instance Functor Board where
   fmap :: (a -> b) -> Board a -> Board b
-  fmap = (<$>)
+  fmap f = Board . fmap f . getBoard
 
 instance (Show a) => Show (Board a) where
   show :: Board a -> String
@@ -52,7 +52,7 @@ emptyRow width = replicate width empty
 
 boardToList :: Board a -> [[a]]
 boardToList (Board board) = (map . map) snd . groupBy equalRows . assocs $ board
-  where equalRows x y = (fst . fst) x == (fst . fst) y
+  where equalRows ((x,_),_) ((y,_),_) = x == y
 
 dims :: Board a -> Point
 dims (Board board) = (maxRow - minRow + 1, maxCol - minCol + 1)
