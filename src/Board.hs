@@ -27,15 +27,15 @@ newtype Board a =
   Board
     { getBoard :: Array Point a
     }
-  deriving (Show, Read)
 
 instance Functor Board where
   fmap :: (a -> b) -> Board a -> Board b
   fmap f = Board . fmap f . getBoard
 
--- instance (Show a) => Show (Board a) where
---   show :: Board a -> String
---   show = unlines . fmap unwords . (fmap . fmap) show . reverse . boardToList
+instance (Show a) => Show (Board a) where
+  show :: Board a -> String
+  show = unlines . fmap unwords . (fmap . fmap) show . reverse . boardToList
+
 mkBoard :: Int -> Int -> a -> Board a
 mkBoard r c val = mkBoard' r c (\_ -> val)
 

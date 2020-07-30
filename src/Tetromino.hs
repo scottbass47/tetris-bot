@@ -9,15 +9,15 @@ newtype Mino =
   Mino
     { isFilled :: Bool
     }
-  deriving (Show, Read)
 
 instance HasEmpty Mino where
   empty = Mino False
   isEmpty = not . isFilled
 
--- instance Show Mino where
---   show (Mino True) = "*"
---   show (Mino False) = "-"
+instance Show Mino where
+  show (Mino True) = "*"
+  show (Mino False) = "-"
+
 data Piece
   = I
   | J
