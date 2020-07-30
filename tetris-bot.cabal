@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d076ea29a21e3245018f08516ee64fa703a59e3b3f040727f2ab7c26def22239
+-- hash: d7d21df381693d20dccdba4f52d49a8dee07cfbbb66c7a6e94517f6650d8bf1a
 
 name:           tetris-bot
 version:        0.1.0.0
@@ -30,6 +30,7 @@ library
       Board
       Lib
       Tetromino
+      Types
       Utils
   other-modules:
       Paths_tetris_bot

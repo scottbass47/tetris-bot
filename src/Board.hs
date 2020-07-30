@@ -9,10 +9,13 @@ module Board
   , clearRows
   , HasEmpty(..)
   , Point
+  , boardToList
+  , boardFromList
   ) where
 
 import Data.Array
 import Data.List
+import Types
 
 class HasEmpty a where
   empty :: a
@@ -24,15 +27,15 @@ newtype Board a =
   Board
     { getBoard :: Array Point a
     }
+  deriving (Show, Read)
 
 instance Functor Board where
   fmap :: (a -> b) -> Board a -> Board b
   fmap f = Board . fmap f . getBoard
 
-instance (Show a) => Show (Board a) where
-  show :: Board a -> String
-  show = unlines . fmap unwords . (fmap . fmap) show . reverse . boardToList
-
+-- instance (Show a) => Show (Board a) where
+--   show :: Board a -> String
+--   show = unlines . fmap unwords . (fmap . fmap) show . reverse . boardToList
 mkBoard :: Int -> Int -> a -> Board a
 mkBoard r c val = mkBoard' r c (\_ -> val)
 
@@ -66,6 +69,13 @@ boardToList :: Board a -> [[a]]
 boardToList = (map . map) snd . groupBy equalRows . assocs . getBoard
   where
     equalRows ((x, _), _) ((y, _), _) = x == y
+
+boardFromList :: [[a]] -> Board a
+boardFromList lst =
+  Board $ listArray ((0, 0), (rows - 1, cols - 1)) $ concat lst
+  where
+    rows = length lst
+    cols = head . fmap length $ lst
 
 dims :: Board a -> Point
 dims (Board board) = (maxRow - minRow + 1, maxCol - minCol + 1)
