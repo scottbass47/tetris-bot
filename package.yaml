@@ -21,7 +21,6 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- text
 - array
 
 library:
@@ -31,8 +30,7 @@ executables:
   tetris-bot-exe:
     main:                Main.hs
     source-dirs:         app
-    exposed-modules: Core
-                   , Utils
+    exposed-modules: 
     ghc-options:
     - -threaded
     - -rtsopts

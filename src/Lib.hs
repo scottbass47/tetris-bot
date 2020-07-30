@@ -3,8 +3,9 @@ module Lib
     ( runBot
     ) where
 
-import Core
+import Board
 import Utils
+import Tetromino
 
 runBot :: IO ()
 runBot = do
