@@ -1,23 +1,14 @@
 module Tetromino
   ( mkTetromino
-  , Mino(..)
   , Piece(..)
+  , Tetromino(..)
+  , Orientation(..)
+  , minosPositions
+  , moveTetromino
+  , rotateTetromino
   ) where
 
-import Board
-
-newtype Mino =
-  Mino
-    { isFilled :: Bool
-    }
-
-instance HasEmpty Mino where
-  empty = Mino False
-  isEmpty = not . isFilled
-
-instance Show Mino where
-  show (Mino True) = "*"
-  show (Mino False) = "-"
+import Types
 
 data Piece
   = I
@@ -46,11 +37,29 @@ data Tetromino =
     }
   deriving (Show)
 
+minosPositions :: Tetromino -> [Point]
+minosPositions tetromino = (<+> p) <$> rotateMino o <$> localPos tetromino
+  where
+    p = pos tetromino
+    o = orientation tetromino
+
 mkTetromino :: Piece -> Tetromino
 mkTetromino piece = Tetromino piece Zero (0, 0) positions offsets
   where
     positions = initialPositions piece
     offsets = pieceOffsets piece
+
+moveTetromino :: Point -> Tetromino -> Tetromino
+moveTetromino point tetromino = tetromino {pos = pos tetromino <+> point}
+
+rotateTetromino :: Orientation -> Tetromino -> Tetromino
+rotateTetromino o tetromino = tetromino {orientation = o}
+
+rotateMino :: Orientation -> Point -> Point
+rotateMino Zero (x, y) = (x, y)
+rotateMino Right' (x, y) = (y, -x)
+rotateMino Two (x, y) = (-x, -y)
+rotateMino Left' (x, y) = (-y, x)
 
 initialPositions :: Piece -> [Point]
 initialPositions I = [(-1, 0), (0, 0), (1, 0), (2, 0)]

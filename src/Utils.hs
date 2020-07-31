@@ -9,8 +9,9 @@ import Board
 import Control.Monad
 import System.Console.ANSI
 import Tetromino
+import Types
 
-printBoard :: Board Mino -> IO ()
+printBoard :: Board -> IO ()
 printBoard board = do
   sequence_ $
     fmap printRow . (fmap . fmap) printMino . fmap words . lines . show $ board
@@ -34,10 +35,10 @@ printBoard board = do
       setSGR [SetColor Foreground intensity color] >>
         (putStr $ minoPrint ++ " ")
 
-writeBoard :: FilePath -> Board Mino -> IO ()
+writeBoard :: FilePath -> Board -> IO ()
 writeBoard path board = writeFile path . show $ board
 
-readBoard :: FilePath -> IO (Board Mino)
+readBoard :: FilePath -> IO Board
 readBoard path = do
   result <- readFile path
   return $
