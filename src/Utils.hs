@@ -2,6 +2,7 @@ module Utils
   ( printBoard
   , writeBoard
   , readBoard
+  , readMino
   ) where
 
 import Board
@@ -18,15 +19,20 @@ printBoard board = do
     printRow actions = sequence actions >> putStrLn ""
     printMino minoStr = do
       let mino@(Mino filled) = readMino minoStr
-      setSGR
-        [ SetColor
-            Foreground
-            Vivid
-            (if filled
-               then Blue
-               else Red)
-        ] >>
-        (putStr $ show mino ++ " ")
+      let intensity =
+            if filled
+              then Vivid
+              else Dull
+      let color =
+            if filled
+              then Green
+              else White
+      let minoPrint =
+            if filled
+              then "*"
+              else " "
+      setSGR [SetColor Foreground intensity color] >>
+        (putStr $ minoPrint ++ " ")
 
 writeBoard :: FilePath -> Board Mino -> IO ()
 writeBoard path board = writeFile path . show $ board

@@ -75,7 +75,7 @@ boardFromList lst =
   Board $ listArray ((0, 0), (rows - 1, cols - 1)) $ concat lst
   where
     rows = length lst
-    cols = head . fmap length $ lst
+    cols = head . fmap length $ lst -- Unsafe for empty list
 
 dims :: Board a -> Point
 dims (Board board) = (maxRow - minRow + 1, maxCol - minCol + 1)
