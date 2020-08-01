@@ -1,13 +1,7 @@
-module Tetromino
-  ( mkTetromino
-  , Piece(..)
-  , Tetromino(..)
-  , Orientation(..)
-  , minosPositions
-  , moveTetromino
-  , rotateTetromino
-  ) where
+module Tetromino where
 
+import qualified Data.Map as Map
+import Data.Tuple (swap)
 import Types
 
 data Piece
@@ -33,12 +27,13 @@ data Tetromino =
     , orientation :: Orientation
     , pos :: Point
     , localPos :: [Point]
-    , offsets :: [(Orientation, [Point])]
+    , offsets :: Map.Map Orientation [Point]
     }
   deriving (Show)
 
 minosPositions :: Tetromino -> [Point]
-minosPositions tetromino = (<+> p) <$> rotateMino o <$> localPos tetromino
+minosPositions tetromino =
+  swap <$> (<+> p) <$> rotateMino o <$> localPos tetromino
   where
     p = pos tetromino
     o = orientation tetromino
@@ -61,6 +56,32 @@ rotateMino Right' (x, y) = (y, -x)
 rotateMino Two (x, y) = (-x, -y)
 rotateMino Left' (x, y) = (-y, x)
 
+rotate :: Direction -> Tetromino -> Tetromino
+rotate dir =
+  case dir of
+    CW -> rotateCW
+    CCW -> rotateCCW
+
+rotateCW :: Tetromino -> Tetromino
+rotateCW tetromino = rotateTetromino newOrientation tetromino
+  where
+    newOrientation =
+      case orientation tetromino of
+        Zero -> Right'
+        Right' -> Two
+        Two -> Left'
+        Left' -> Zero
+
+rotateCCW :: Tetromino -> Tetromino
+rotateCCW tetromino = rotateTetromino newOrientation tetromino
+  where
+    newOrientation =
+      case orientation tetromino of
+        Zero -> Left'
+        Left' -> Two
+        Two -> Right'
+        Right' -> Zero
+
 initialPositions :: Piece -> [Point]
 initialPositions I = [(-1, 0), (0, 0), (1, 0), (2, 0)]
 initialPositions J = [(-1, 1), (-1, 0), (0, 0), (1, 0)]
@@ -70,18 +91,25 @@ initialPositions S = [(-1, 0), (0, 0), (0, 1), (1, 1)]
 initialPositions Z = [(-1, 1), (0, 1), (0, 0), (1, 0)]
 initialPositions O = [(0, 0), (1, 0), (0, 1), (1, 1)]
 
-pieceOffsets :: Piece -> [(Orientation, [Point])]
+pieceOffsets :: Piece -> Map.Map Orientation [Point]
 pieceOffsets I =
-  [ (Zero, [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)])
-  , (Right', [(-1, 0), (0, 0), (0, 0), (0, 1), (0, -2)])
-  , (Two, [(-1, 1), (1, 1), (-2, 1), (1, 0), (-2, 0)])
-  , (Left', [(0, 1), (0, 1), (0, 1), (0, -1), (0, 2)])
-  ]
+  Map.fromList
+    [ (Zero, [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)])
+    , (Right', [(-1, 0), (0, 0), (0, 0), (0, 1), (0, -2)])
+    , (Two, [(-1, 1), (1, 1), (-2, 1), (1, 0), (-2, 0)])
+    , (Left', [(0, 1), (0, 1), (0, 1), (0, -1), (0, 2)])
+    ]
 pieceOffsets O =
-  [(Zero, [(0, 0)]), (Right', [(0, -1)]), (Two, [(-1, -1)]), (Left', [(-1, 0)])]
+  Map.fromList
+    [ (Zero, [(0, 0)])
+    , (Right', [(0, -1)])
+    , (Two, [(-1, -1)])
+    , (Left', [(-1, 0)])
+    ]
 pieceOffsets _ =
-  [ (Zero, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
-  , (Right', [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)])
-  , (Two, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
-  , (Left', [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)])
-  ]
+  Map.fromList
+    [ (Zero, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
+    , (Right', [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)])
+    , (Two, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
+    , (Left', [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)])
+    ]

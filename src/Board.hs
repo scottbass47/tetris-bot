@@ -1,16 +1,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Board
-  ( Board(getBoard)
-  , mkBoard
-  , mkBoard'
-  , dims
-  , clearRows
-  , boardToList
-  , boardFromList
-  , placeTetromino
-  ) where
+module Board where
 
 import Data.Array
 import Data.List
@@ -54,7 +45,20 @@ clearRows rows board = Board . (// emptyRows) . (// newRows) . getBoard $ board
 -- Assumes tetromino is in a valid position
 placeTetromino :: Tetromino -> Board -> Board
 placeTetromino tetromino (Board board) =
-  Board $ board // (flip (,) (Mino True) . swap <$> minosPositions tetromino)
+  Board $ board // (flip (,) (Mino True) <$> minosPositions tetromino)
+
+terminalPosition :: Board -> Tetromino -> Bool
+terminalPosition board = not . canPlace board . moveTetromino (-1, 0)
+
+canPlace :: Board -> Tetromino -> Bool
+canPlace board = all open . minosPositions
+  where
+    open pos = inBounds board pos && (not . isFilled) (getBoard board ! pos)
+
+inBounds :: Board -> Point -> Bool
+inBounds board = inRange boardBounds
+  where
+    boardBounds = bounds . getBoard $ board
 
 boardToList :: Board -> [[Mino]]
 boardToList = (map . map) snd . groupBy equalRows . assocs . getBoard

@@ -8,6 +8,7 @@ newtype Mino =
   Mino
     { isFilled :: Bool
     }
+  deriving (Eq)
 
 instance HasEmpty Mino where
   empty = Mino False
@@ -19,7 +20,15 @@ instance Show Mino where
 
 type Point = (Int, Int)
 
-infixl 6 <+>
+data Direction
+  = CW
+  | CCW
+  deriving (Show, Eq, Ord)
+
+infixl 6 <+>, <->
 
 (<+>) :: Point -> Point -> Point
 (<+>) (x1, y1) (x2, y2) = (x1 + x2, y1 + y2)
+
+(<->) :: Point -> Point -> Point
+(<->) (x1, y1) (x2, y2) = (x1 - x2, y1 - y2)
