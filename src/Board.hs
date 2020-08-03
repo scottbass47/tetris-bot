@@ -47,7 +47,7 @@ placeTetromino tetromino (Board board) =
   Board $ board // ((, Mino True) <$> minosPositions tetromino)
 
 terminalPosition :: Board -> Tetromino -> Bool
-terminalPosition board = not . canPlace board . moveTetromino (-1, 0)
+terminalPosition board = not . canPlace board . moveTetromino (0, -1)
 
 canPlace :: Board -> Tetromino -> Bool
 canPlace board = all open . minosPositions
