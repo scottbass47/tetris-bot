@@ -2,7 +2,7 @@ module Tetromino where
 
 import qualified Data.Map as Map
 import Data.Tuple (swap)
-import Types
+import Types hiding (Direction(L))
 
 data Piece
   = I
@@ -29,11 +29,11 @@ data Tetromino =
     , localPos :: [Point]
     , offsets :: Map.Map Orientation [Point]
     }
-  deriving (Show)
+  deriving (Show, Ord, Eq)
 
 minosPositions :: Tetromino -> [Point]
 minosPositions tetromino =
-  swap <$> (<+> p) <$> rotateMino o <$> localPos tetromino
+  (swap . (<+> p)) . rotateMino o <$> localPos tetromino
   where
     p = pos tetromino
     o = orientation tetromino
@@ -44,7 +44,7 @@ mkTetromino piece = Tetromino piece Zero (0, 0) positions offsets
     positions = initialPositions piece
     offsets = pieceOffsets piece
 
-moveTetromino :: Point -> Tetromino -> Tetromino
+moveTetromino :: Delta -> Tetromino -> Tetromino
 moveTetromino point tetromino = tetromino {pos = pos tetromino <+> point}
 
 rotateTetromino :: Orientation -> Tetromino -> Tetromino
@@ -56,7 +56,7 @@ rotateMino Right' (x, y) = (y, -x)
 rotateMino Two (x, y) = (-x, -y)
 rotateMino Left' (x, y) = (-y, x)
 
-rotate :: Direction -> Tetromino -> Tetromino
+rotate :: Rotation -> Tetromino -> Tetromino
 rotate dir =
   case dir of
     CW -> rotateCW

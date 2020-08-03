@@ -1,5 +1,4 @@
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TupleSections #-}
 
 module Board where
 
@@ -15,10 +14,10 @@ newtype Board =
     }
 
 instance Show Board where
-  show = unlines . fmap unwords . (fmap . fmap) show . reverse . boardToList
+  show = unlines . fmap (unwords . fmap show) . reverse . boardToList
 
 mkBoard :: Int -> Int -> Mino -> Board
-mkBoard r c val = mkBoard' r c (\_ -> val)
+mkBoard r c val = mkBoard' r c $ const val
 
 mkBoard' :: Int -> Int -> (Point -> Mino) -> Board
 mkBoard' r c f = Board $ array size [(i, f i) | i <- range size]
@@ -30,7 +29,7 @@ clearRows rows board = Board . (// emptyRows) . (// newRows) . getBoard $ board
   where
     (rowsToClear, rowsToKeep) =
       partition ((&&) <$> (`elem` rows) <*> inRange rowRange) $ range rowRange
-    rowsToReplace = range (0, (length rowsToKeep) - 1)
+    rowsToReplace = range (0, length rowsToKeep - 1)
     rowsToFill = range (length rowsToKeep, snd rowRange)
     rowRange = rowsRange board
     newRows =
@@ -45,7 +44,7 @@ clearRows rows board = Board . (// emptyRows) . (// newRows) . getBoard $ board
 -- Assumes tetromino is in a valid position
 placeTetromino :: Tetromino -> Board -> Board
 placeTetromino tetromino (Board board) =
-  Board $ board // (flip (,) (Mino True) <$> minosPositions tetromino)
+  Board $ board // ((, Mino True) <$> minosPositions tetromino)
 
 terminalPosition :: Board -> Tetromino -> Bool
 terminalPosition board = not . canPlace board . moveTetromino (-1, 0)

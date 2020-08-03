@@ -20,9 +20,26 @@ instance Show Mino where
 
 type Point = (Int, Int)
 
-data Direction
+type Delta = Point
+
+type Offset = Point
+
+data Rotation
   = CW
   | CCW
+  deriving (Show, Eq, Ord)
+
+data Direction
+  = L
+  | R
+  deriving (Show, Eq, Ord)
+
+data Input
+  = Move Direction
+  | Rotate Rotation
+  | ForceDown
+  | Nop
+  -- | Gravity
   deriving (Show, Eq, Ord)
 
 infixl 6 <+>, <->
