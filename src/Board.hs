@@ -5,6 +5,7 @@ module Board where
 import Data.Array
 import Data.List
 import Data.Tuple
+import Debug.Trace
 import Tetromino
 import Types
 
@@ -43,8 +44,10 @@ clearRows rows board = Board . (// emptyRows) . (// newRows) . getBoard $ board
 
 -- Assumes tetromino is in a valid position
 placeTetromino :: Tetromino -> Board -> Board
-placeTetromino tetromino (Board board) =
-  Board $ board // ((, Mino True) <$> minosPositions tetromino)
+placeTetromino tetromino (Board board) = clearRows rowsToClear board'
+  where
+    board' = Board $ board // ((, Mino True) <$> minosPositions tetromino)
+    rowsToClear = findIndices (all isFilled) . boardToList $ board'
 
 terminalPosition :: Board -> Tetromino -> Bool
 terminalPosition board = not . canPlace board . moveTetromino (0, -1)

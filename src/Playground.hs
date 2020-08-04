@@ -38,7 +38,8 @@ runEngine :: IO ()
 runEngine = do
   board <- canonIO
   let t = moveTetromino (5, 15) tPiece
-  printPath $ fromJust $ makeMove board t mostEmptyRows
+  let path = fromJust $ makeMove board t mostEmptyRows
+  printPath $ fromJust $ makeMove (pathBoard path) t mostEmptyRows
 
 printPath (Path inputs nodes pathBoard) =
   printShow pathBoard >> printShow inputs
