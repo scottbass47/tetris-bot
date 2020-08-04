@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9ceafe417299b2b944185f82a136762e35d4c3e204e83fc8ae41c5431c70b39b
+-- hash: cca8a493e089b7215ddbc1d94b044bf0bd9cc3b42ebdb78c4c1b7dd927145082
 
 name:           tetris-bot
 version:        0.1.0.0
@@ -28,6 +28,8 @@ source-repository head
 library
   exposed-modules:
       Board
+      Engine
+      Evaluator
       Lib
       Pathing
       Playground

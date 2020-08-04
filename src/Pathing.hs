@@ -14,6 +14,7 @@ data Path =
   Path
     { inputs :: [Input]
     , pathNodes :: [Tetromino]
+    , pathBoard :: Board
     }
   deriving (Show)
 
@@ -26,22 +27,28 @@ data Node =
   deriving (Show, Eq, Ord)
 
 findPaths :: Board -> Tetromino -> [Path]
-findPaths board tetromino = map (reversePath . nodeToPath) terminalNodes
+findPaths board root = map terminalNodeToPath terminalNodes
   where
     (_, _, terminalNodes) =
-      bfs board (Q.singleton startNode) (S.singleton tetromino) []
-    startNode = Node Nothing Nop tetromino
+      bfs board (Q.singleton startNode) (S.singleton root) []
+    startNode = Node Nothing Nop root
+    --
+    terminalNodeToPath :: Node -> Path
+    terminalNodeToPath node =
+      p {pathBoard = placeTetromino (tetromino node) (pathBoard p)}
+      where
+        p = reversePath . nodeToPath $ node
     --
     nodeToPath :: Node -> Path
-    nodeToPath (Node Nothing _ tetromino) = Path [] [tetromino]
+    nodeToPath (Node Nothing _ tetromino) = Path [] [tetromino] board
     nodeToPath (Node (Just parent) input tetromino) =
-      Path (input : inputs parentPath) (tetromino : pathNodes parentPath)
+      Path (input : inputs parentPath) (tetromino : pathNodes parentPath) board
       where
         parentPath = nodeToPath parent
     --
     reversePath :: Path -> Path
-    reversePath (Path inputs pathNodes) =
-      Path (reverse inputs) (reverse pathNodes)
+    reversePath (Path inputs pathNodes pb) =
+      Path (reverse inputs) (reverse pathNodes) pb
 
 bfs ::
      Board

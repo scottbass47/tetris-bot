@@ -1,8 +1,11 @@
 module Playground where
 
 import Board
+import Data.Maybe
 import qualified Data.Sequence as Q
 import qualified Data.Set as S
+import Engine
+import Evaluator
 import Pathing
 import Tetromino
 import Types
@@ -15,7 +18,6 @@ canonIO = readBoard "res/dt_canon.txt"
 
 tPiece = mkTetromino T
 
--- BFS
 runBfs :: IO ()
 runBfs = do
   mini <- canonIO
@@ -30,7 +32,16 @@ runFindPaths = do
   board <- canonIO
   let t = moveTetromino (5, 15) tPiece
   let paths = findPaths board t
-  let printBoard' = putStrLn . show . flip placeTetromino board . last
-  let printInputs = putStrLn . show
-  let printPath (Path inputs nodes) = printBoard' nodes >> printInputs inputs
   sequence_ . map printPath $ paths
+
+runEngine :: IO ()
+runEngine = do
+  board <- canonIO
+  let t = moveTetromino (5, 15) tPiece
+  printPath $ fromJust $ makeMove board t mostEmptyRows
+
+printPath (Path inputs nodes pathBoard) =
+  printShow pathBoard >> printShow inputs
+
+printShow :: (Show a) => a -> IO ()
+printShow = putStrLn . show
