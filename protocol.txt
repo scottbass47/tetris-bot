@@ -1,0 +1,50 @@
+Protocol
+------------------
+Type: Json
+
+Message (general format)
+{
+  type: string
+  data: object
+}
+
+Handshake (initial client message):
+{
+  type: "initial",
+  data: {
+    boardSize: {
+      rows: int,
+      cols: int
+    } 
+  }
+}
+
+
+Make move (server -> client):
+{
+  type: "makeMove",
+  data: {
+    inputs: [move]
+  }
+}
+
+On new piece spawn (client -> server)
+{
+  type: "spawn",
+  data: {
+    board: [[int]], // list of mino positions [row, col]
+    pieceType: string
+  }
+}
+
+
+move:
+{
+  input: input,
+  position: [int] // [row, col]
+  orientation: string
+}
+
+orientation: right, left, two, zero
+input: moveLeft, moveRight, rotateCW, rotateCCW, softDrop, hardDrop (hold)
+pieceType: I, J, L, T, S, Z, O

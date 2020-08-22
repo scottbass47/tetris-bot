@@ -9,10 +9,9 @@ import Debug.Trace
 import Tetromino
 import Types
 
-newtype Board =
-  Board
-    { getBoard :: Array Point Mino
-    }
+newtype Board = Board
+  { getBoard :: Array Point Mino
+  }
 
 instance Show Board where
   show = unlines . fmap (unwords . fmap show) . reverse . boardToList
@@ -46,7 +45,7 @@ clearRows rows board = Board . (// emptyRows) . (// newRows) . getBoard $ board
 placeTetromino :: Tetromino -> Board -> Board
 placeTetromino tetromino (Board board) = clearRows rowsToClear board'
   where
-    board' = Board $ board // ((, Mino True) <$> minosPositions tetromino)
+    board' = Board $ board // ((,Mino True) <$> minosPositions tetromino)
     rowsToClear = findIndices (all isFilled) . boardToList $ board'
 
 terminalPosition :: Board -> Tetromino -> Bool

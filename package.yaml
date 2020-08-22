@@ -24,6 +24,9 @@ dependencies:
 - array
 - ansi-terminal
 - containers
+- text
+- websockets 
+- aeson
 
 library:
   source-dirs: src

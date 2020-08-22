@@ -2,7 +2,7 @@ module Tetromino where
 
 import qualified Data.Map as Map
 import Data.Tuple (swap)
-import Types hiding (Direction(L))
+import Types hiding (Direction (L))
 
 data Piece
   = I
@@ -21,14 +21,13 @@ data Orientation
   | Left'
   deriving (Show, Eq, Ord)
 
-data Tetromino =
-  Tetromino
-    { piece :: Piece
-    , orientation :: Orientation
-    , pos :: Point
-    , localPos :: [Point]
-    , offsets :: Map.Map Orientation [Point]
-    }
+data Tetromino = Tetromino
+  { piece :: Piece,
+    orientation :: Orientation,
+    pos :: Point,
+    localPos :: [Point],
+    offsets :: Map.Map Orientation [Point]
+  }
   deriving (Show, Ord, Eq)
 
 minosPositions :: Tetromino -> [Point]
@@ -52,9 +51,9 @@ rotateTetromino o tetromino = tetromino {orientation = o}
 
 rotateMino :: Orientation -> Point -> Point
 rotateMino Zero (x, y) = (x, y)
-rotateMino Right' (x, y) = (y, -x)
-rotateMino Two (x, y) = (-x, -y)
-rotateMino Left' (x, y) = (-y, x)
+rotateMino Right' (x, y) = (y, - x)
+rotateMino Two (x, y) = (- x, - y)
+rotateMino Left' (x, y) = (- y, x)
 
 rotate :: Rotation -> Tetromino -> Tetromino
 rotate dir =
@@ -94,22 +93,22 @@ initialPositions O = [(0, 0), (1, 0), (0, 1), (1, 1)]
 pieceOffsets :: Piece -> Map.Map Orientation [Point]
 pieceOffsets I =
   Map.fromList
-    [ (Zero, [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)])
-    , (Right', [(-1, 0), (0, 0), (0, 0), (0, 1), (0, -2)])
-    , (Two, [(-1, 1), (1, 1), (-2, 1), (1, 0), (-2, 0)])
-    , (Left', [(0, 1), (0, 1), (0, 1), (0, -1), (0, 2)])
+    [ (Zero, [(0, 0), (-1, 0), (2, 0), (-1, 0), (2, 0)]),
+      (Right', [(-1, 0), (0, 0), (0, 0), (0, 1), (0, -2)]),
+      (Two, [(-1, 1), (1, 1), (-2, 1), (1, 0), (-2, 0)]),
+      (Left', [(0, 1), (0, 1), (0, 1), (0, -1), (0, 2)])
     ]
 pieceOffsets O =
   Map.fromList
-    [ (Zero, [(0, 0)])
-    , (Right', [(0, -1)])
-    , (Two, [(-1, -1)])
-    , (Left', [(-1, 0)])
+    [ (Zero, [(0, 0)]),
+      (Right', [(0, -1)]),
+      (Two, [(-1, -1)]),
+      (Left', [(-1, 0)])
     ]
 pieceOffsets _ =
   Map.fromList
-    [ (Zero, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
-    , (Right', [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)])
-    , (Two, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)])
-    , (Left', [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)])
+    [ (Zero, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]),
+      (Right', [(0, 0), (1, 0), (1, -1), (0, 2), (1, 2)]),
+      (Two, [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]),
+      (Left', [(0, 0), (-1, 0), (-1, -1), (0, 2), (-1, 2)])
     ]

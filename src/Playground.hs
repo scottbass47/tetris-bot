@@ -6,6 +6,7 @@ import qualified Data.Sequence as Q
 import qualified Data.Set as S
 import Engine
 import Evaluator
+import Message
 import Pathing
 import Tetromino
 import Types
@@ -17,15 +18,6 @@ miniIO = readBoard "res/mini.txt"
 canonIO = readBoard "res/dt_canon.txt"
 
 tPiece = mkTetromino T
-
-runBfs :: IO ()
-runBfs = do
-  mini <- canonIO
-  let t = moveTetromino (5, 15) tPiece
-  let startNode = Node Nothing Nop t
-  let (_, _, nodes) = bfs mini (Q.singleton startNode) (S.singleton t) []
-  sequence_ . map (putStrLn . show . flip placeTetromino mini . tetromino) $
-    nodes
 
 runFindPaths :: IO ()
 runFindPaths = do
@@ -46,3 +38,4 @@ printPath (Path inputs nodes pathBoard) =
 
 printShow :: (Show a) => a -> IO ()
 printShow = putStrLn . show
+

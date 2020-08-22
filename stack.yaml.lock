@@ -25,4 +25,9 @@ packages:
       sha256: 9280e4aab60242aa4847d0e6db70a378c910fceb9085d41aa8d10061b3d7a899
   original:
     hackage: mintty-0.1.2
-snapshots: []
+snapshots:
+- completed:
+    size: 532383
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/16/10.yaml
+    sha256: 469d781ab6d2a4eceed6b31b6e4ec842dcd3cd1d11577972e86902603dce24df
+  original: lts-16.10

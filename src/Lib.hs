@@ -1,10 +1,9 @@
 module Lib
-  ( runBot
-  ) where
+  ( runBot,
+  )
+where
 
-import Board
-import Tetromino
-import Utils
+import Sockets
 
 runBot :: IO ()
-runBot = readBoard "res/dt_canon.txt" >>= printBoard
+runBot = runServer

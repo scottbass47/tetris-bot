@@ -34,6 +34,7 @@ data Direction
   | R
   deriving (Show, Eq, Ord)
 
+
 data Input
   = Move Direction
   | Rotate Rotation
