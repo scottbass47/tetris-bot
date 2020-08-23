@@ -1,7 +1,14 @@
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 module Tetromino where
 
+import Data.Aeson.Types
 import qualified Data.Map as Map
+import qualified Data.Text as T
 import Data.Tuple (swap)
+import GHC.Generics
 import Types hiding (Direction (L))
 
 data Piece
@@ -12,7 +19,7 @@ data Piece
   | S
   | Z
   | O
-  deriving (Show, Eq, Ord)
+  deriving (Show, Eq, Ord, Generic, FromJSON, ToJSON)
 
 data Orientation
   = Zero
@@ -20,6 +27,21 @@ data Orientation
   | Two
   | Left'
   deriving (Show, Eq, Ord)
+
+instance FromJSON Orientation where
+  parseJSON = withText "Orientation" $ \s ->
+    case s of
+      "right" -> return Right'
+      "left" -> return Left'
+      "two" -> return Two
+      "zero" -> return Zero
+      _ -> fail $ T.unpack $ "Orientation " <> s <> " doesn't exist"
+
+instance ToJSON Orientation where
+  toJSON Left' = "left"
+  toJSON Right' = "right"
+  toJSON Two = "two"
+  toJSON Zero = "zero"
 
 data Tetromino = Tetromino
   { piece :: Piece,

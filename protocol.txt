@@ -12,10 +12,7 @@ Handshake (initial client message):
 {
   type: "initial",
   data: {
-    boardSize: {
-      rows: int,
-      cols: int
-    } 
+    boardSize: [rows, cols] 
   }
 }
 

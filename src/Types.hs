@@ -1,4 +1,8 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Types where
+
+import Data.Aeson
+import qualified Data.Text as T 
 
 class HasEmpty a where
   empty :: a
@@ -42,6 +46,22 @@ data Input
   | Nop
   -- | Gravity
   deriving (Show, Eq, Ord)
+
+instance FromJSON Input where
+  parseJSON = withText "Input" $ \s ->
+    case s of
+      "moveLeft" -> return $ Move Types.L
+      "moveRight" -> return $ Move Types.R
+      "rotateCW" -> return $ Rotate CW
+      "rotateCCW" -> return $ Rotate CCW
+      _ -> fail $ T.unpack $ "Input " <> s <> " not handled"
+
+instance ToJSON Input where
+  toJSON (Move Types.L) = "moveLeft"
+  toJSON (Move Types.R) = "moveRight"
+  toJSON (Rotate CW) = "rotateCW"
+  toJSON (Rotate CCW) = "rotateCCW"
+  toJSON input = String . T.pack . show $ input
 
 infixl 6 <+>, <->
 
