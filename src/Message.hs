@@ -48,7 +48,7 @@ instance FromJSON MsgT where
       "initial" -> return InitialT
       "makeMove" -> return MakeMoveT
       "spawn" -> return SpawnT
-      _ -> fail "wrong again"
+      _ -> fail "Invalid message type"
 
 instance ToJSON MsgT where
   toJSON InitialT = "initial"

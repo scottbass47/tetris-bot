@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 3ccb7241faea27d0337b77ce170050d7fa8849ffa594872b05e494b5b5044fbd
+-- hash: 0fd44e5ecf1838f9b2b4270f7a6e9188aec95395e164ba9d26bb25406c79d100
 
 name:           tetris-bot
 version:        0.1.0.0
@@ -48,6 +48,7 @@ library
     , ansi-terminal
     , array
     , base >=4.7 && <5
+    , bytestring
     , containers
     , text
     , websockets
@@ -65,6 +66,7 @@ executable tetris-bot-exe
     , ansi-terminal
     , array
     , base >=4.7 && <5
+    , bytestring
     , containers
     , tetris-bot
     , text
@@ -84,6 +86,7 @@ test-suite tetris-bot-test
     , ansi-terminal
     , array
     , base >=4.7 && <5
+    , bytestring
     , containers
     , tetris-bot
     , text

@@ -5,12 +5,17 @@ module Sockets where
 import Control.Concurrent (MVar, modifyMVar, modifyMVar_, newMVar, readMVar)
 import Control.Exception (finally)
 import Control.Monad (forM_, forever)
+import Data.Aeson
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy.Char8 as CLBS
 import Data.Char (isPunctuation, isSpace)
 import Data.Maybe
 import Data.Monoid (mappend)
 import Data.Text (Text)
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
+import Message
 import qualified Network.WebSockets as WS
 
 type Client = WS.Connection
@@ -38,28 +43,33 @@ application :: MVar ServerState -> WS.ServerApp
 application state pending = do
   conn <- WS.acceptRequest pending
   WS.withPingThread conn 30 (return ()) $ do
-    msg <- WS.receiveData conn :: IO Text
+    msg <- WS.receiveData conn :: IO LBS.ByteString
     serverState <- readMVar state
-    case msg of
-      _
-        | clientExists serverState ->
-          WS.sendTextData conn ("Client already connected" :: Text)
-            >> putStrLn "Client already connected"
-        | otherwise -> flip finally disconnect $ do
-          modifyMVar_ state $ \s -> do
-            let s' = addClient conn s
-            WS.sendTextData conn ("Hi!" :: Text)
-            putStrLn "Client connected"
-            return s'
-          talk conn state
+    case decode' msg of
+      Just (Initial d) ->
+        if clientExists serverState
+          then
+            WS.sendTextData conn ("Client already connected" :: Text)
+              >> putStrLn "Client already connected"
+          else do
+            putStrLn . show . boardSize $ d
+            -- CLBS.putStrLn $ "Received: " <> msg
+            flip finally disconnect $ do
+              modifyMVar_ state $ \s -> do
+                let s' = addClient conn s
+                -- WS.sendTextData conn ("Hi!" :: Text)
+                putStrLn "Client connected"
+                return s'
+              talk conn state
         where
           disconnect = do
             s <- modifyMVar state $ \s ->
               let s' = removeClient conn s in return (s', s')
             return s
+      _ -> WS.sendTextData conn ("Invalid handshake format" :: Text)
 
 talk :: Client -> MVar ServerState -> IO ()
 talk conn state = forever $ do
   msg <- WS.receiveData conn :: IO Text
-  T.putStrLn msg
+  T.putStrLn $ "Received: " <> msg
   WS.sendTextData conn msg
