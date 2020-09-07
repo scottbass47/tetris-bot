@@ -49,19 +49,18 @@ application state pending = do
       Just (Initial d) ->
         if clientExists serverState
           then
-            WS.sendTextData conn ("Client already connected" :: Text)
-              >> putStrLn "Client already connected"
+            WS.sendTextData conn alreadyConnected
+              >> T.putStrLn alreadyConnected
           else do
             putStrLn . show . boardSize $ d
-            -- CLBS.putStrLn $ "Received: " <> msg
             flip finally disconnect $ do
               modifyMVar_ state $ \s -> do
                 let s' = addClient conn s
-                -- WS.sendTextData conn ("Hi!" :: Text)
                 putStrLn "Client connected"
                 return s'
               talk conn state
         where
+          alreadyConnected = "Client already connected" :: Text
           disconnect = do
             s <- modifyMVar state $ \s ->
               let s' = removeClient conn s in return (s', s')
@@ -70,6 +69,11 @@ application state pending = do
 
 talk :: Client -> MVar ServerState -> IO ()
 talk conn state = forever $ do
-  msg <- WS.receiveData conn :: IO Text
-  T.putStrLn $ "Received: " <> msg
-  WS.sendTextData conn msg
+  msg <- WS.receiveData conn :: IO LBS.ByteString
+  case decode' msg of
+    Just (Spawn d) -> do
+      putStrLn $ "Board: " <> (show . board $ d)
+      putStrLn $ "Piece: " <> (show . pieceType $ d)
+    _ -> WS.sendTextData conn $ "Invalid message: " <> msg
+
+-- T.putStrLn $ "Received: " <> msg
